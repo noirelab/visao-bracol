@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Proposta BRACOL</title>
+<style>
+  @page { size: A4; margin: 22mm 20mm 20mm 20mm;
+          @bottom-center { content: counter(page); font: 9pt Inter, sans-serif; color: #666; } }
+  :root { --ink: #1d1d1b; --muted: #5a5a55; --rule: #d6d6cf; --accent: #2f5d3a; --tint: #f3f5f0; }
+  html { background: #fff; }
+  body { font: 10.5pt/1.5 "Noto Serif", "Liberation Serif", serif; color: var(--ink); margin: 0; }
+  h1, h2, h3, table, figcaption, .meta, .kpi { font-family: Inter, sans-serif; }
+  .capa { border-bottom: 2px solid var(--accent); padding-bottom: 14px; margin-bottom: 18px; }
+  .capa .disc { font: 600 9pt Inter, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+  h1 { font-size: 19pt; line-height: 1.2; margin: 0 0 10px; font-weight: 700; }
+  .meta { font-size: 9.5pt; color: var(--muted); margin: 0; }
+  .meta b { color: var(--ink); font-weight: 600; }
+  h2 { font-size: 12.5pt; color: var(--accent); margin: 20px 0 6px; break-after: avoid; }
+  h3 { font-size: 10.5pt; margin: 14px 0 4px; break-after: avoid; }
+  p { margin: 0 0 8px; text-align: justify; hyphens: auto; }
+  ul, ol { margin: 0 0 8px; padding-left: 20px; }
+  li { margin-bottom: 3px; }
+  table { border-collapse: collapse; width: 100%; font-size: 8.8pt; margin: 6px 0 4px; break-inside: avoid; }
+  th, td { border-bottom: 1px solid var(--rule); padding: 4px 6px; text-align: left; }
+  th { font-weight: 600; border-bottom: 1.5px solid var(--ink); }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.destaque td { background: var(--tint); font-weight: 600; }
+  .legenda { font: 8.5pt Inter, sans-serif; color: var(--muted); margin: 2px 0 12px; }
+  figure { margin: 8px 0 12px; break-inside: avoid; }
+  figure img { width: 100%; display: block; }
+  figcaption { font-size: 8.5pt; color: var(--muted); margin-top: 4px; }
+  .kpis { display: flex; gap: 10px; margin: 8px 0 12px; break-inside: avoid; }
+  .kpi { flex: 1; border: 1px solid var(--rule); border-left: 3px solid var(--accent); padding: 8px 10px; }
+  .kpi .v { font-size: 20pt; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .kpi .l { font-size: 8.5pt; color: var(--muted); }
+  .nota { font-size: 9.5pt; background: var(--tint); padding: 8px 10px; border-left: 3px solid var(--rule); margin: 8px 0; }
+  code { font: 8.8pt "DejaVu Sans Mono", monospace; }
+  .quebra { break-before: page; }
+  .refs li { font-size: 9pt; text-align: left; }
+</style>
+</head>
+<body>
+
+<section class="capa">
+  <p class="disc">Visão Computacional · Proposta de projeto final</p>
+  <h1>Classificação de estresses bióticos em folhas de café arábica: Machine Learning clássico versus YOLO</h1>
+  <p class="meta"><b>Integrantes:</b> Kaíque Medeiros Lima e Erick Bonruque</p>
+  <p class="meta"><b>Dataset:</b> BRACOL (subconjunto <i>symptom</i>) · <b>Data:</b> 11 de novembro de 2026</p>
+</section>
+
+<h2>1. Descrição do problema</h2>
+<p>O Brasil é o maior produtor mundial de café, e a produtividade das lavouras depende do controle de pragas e doenças que atacam as folhas. Quatro estresses bióticos são comuns no café arábica: o bicho-mineiro (<i>Leucoptera coffeella</i>), a ferrugem (<i>Hemileia vastatrix</i>), a mancha-de-phoma (<i>Phoma</i> spp.) e a cercosporiose (<i>Cercospora coffeicola</i>). O diagnóstico é feito por inspeção visual, que exige experiência e é difícil de escalar. Várias lesões são parecidas: manchas marrons necróticas aparecem no bicho-mineiro, na phoma e na cercosporiose.</p>
+<p>O projeto trata o diagnóstico como um problema de <b>classificação de imagens em 5 classes</b> (saudável e os quatro estresses), a partir de recortes de sintomas fotografados com smartphone. A mesma tarefa e o mesmo dataset são resolvidos por duas abordagens: uma baseada em atributos extraídos manualmente e classificadores clássicos, outra baseada em uma rede neural profunda da família YOLO.</p>
+
+<h2>2. Objetivos</h2>
+<p><b>Objetivo geral:</b> comparar, de forma objetiva e reprodutível, uma solução de Machine Learning clássico e uma solução de Deep Learning para identificar estresses bióticos em folhas de café.</p>
+<p><b>Objetivos específicos:</b></p>
+<ol>
+  <li>Construir um pipeline clássico com pré-processamento, extração de atributos de cor, textura (LBP, Haralick) e forma (HOG) e classificadores supervisionados, com meta de F1 ≥ 0,60.</li>
+  <li>Treinar um classificador YOLO com transferência de aprendizado, com meta de F1 ≥ 0,80.</li>
+  <li>Medir qual grupo de atributos contribui mais para o desempenho do pipeline clássico (ablação).</li>
+  <li>Comparar as soluções por precision, recall, F1, matriz de confusão e análise visual de acertos e falhas.</li>
+</ol>
+
+<h2>3. Dataset e origem</h2>
+<p>O BRACOL (<i>Brazilian Arabica Coffee Leaf images dataset</i>) foi publicado por Krohling, Esgario e Ventura (UFES) em 2019, sob licença <b>CC BY 4.0</b>. As folhas foram coletadas em Santa Maria de Marechal Floreano, região serrana do Espírito Santo, em diferentes épocas do ano. As fotos mostram a face inferior (abaxial) da folha sobre fundo branco e foram tiradas com cinco smartphones diferentes. A rotulagem foi assistida por um especialista.</p>
+<p>O dataset tem três partes: 1.747 folhas inteiras com rótulo de estresse predominante e severidade, 500 imagens com máscaras de segmentação (fundo, folha, sintoma) e o subconjunto <i>symptom</i>, com recortes de lesões isoladas em que cada imagem contém um único estresse. Este projeto usa o subconjunto <i>symptom</i>, que já vem com divisão oficial em treino, validação e teste.</p>
+
+<table>
+  <tr><th>Classe</th><th class="n">Treino</th><th class="n">Validação</th><th class="n">Teste</th><th class="n">Total</th></tr>
+  <tr><td>Saudável</td><td class="n">182</td><td class="n">40</td><td class="n">39</td><td class="n">261</td></tr>
+  <tr><td>Bicho-mineiro</td><td class="n">374</td><td class="n">83</td><td class="n">83</td><td class="n">540</td></tr>
+  <tr><td>Ferrugem</td><td class="n">434</td><td class="n">93</td><td class="n">94</td><td class="n">621</td></tr>
+  <tr><td>Phoma</td><td class="n">325</td><td class="n">70</td><td class="n">69</td><td class="n">464</td></tr>
+  <tr><td>Cercospora</td><td class="n">224</td><td class="n">49</td><td class="n">50</td><td class="n">323</td></tr>
+  <tr class="destaque"><td>Total</td><td class="n">1.539</td><td class="n">335</td><td class="n">335</td><td class="n">2.209</td></tr>
+</table>
+<p class="legenda">Tabela 1. Distribuição do subconjunto <i>symptom</i>. Imagens JPEG com mediana de 227 × 204 px. A maior razão entre classes é de cerca de 2,4:1 (ferrugem contra saudável).</p>
+
+<figure>
+  <img src="../results/amostras.png" alt="Seis exemplos de cada classe" style="width:72%;margin:0 auto">
+  <figcaption>Figura 1. Exemplos do conjunto de treino, uma classe por linha.</figcaption>
+</figure>
+
+<div class="nota">O arquivo publicado no Mendeley Data (doi 10.17632/yy2k5y8mxg.1) está truncado: tem só 1.402 imagens de folhas, sem os recortes de sintomas. A versão completa (4.990 arquivos) foi obtida pelo link indicado no repositório oficial dos autores (github.com/esgario/lara2018).</div>
+
+<h2>4. Metodologia</h2>
+<ul>
+  <li><b>Protocolo:</b> o treino ajusta os modelos, a validação escolhe atributos, hiperparâmetros e o checkpoint da rede, e o teste é usado uma única vez, no fim. As duas soluções usam exatamente as mesmas imagens em cada partição.</li>
+  <li><b>Métrica principal:</b> F1 macro, que dá o mesmo peso a cada classe e não é inflada pelas classes maiores.</li>
+  <li><b>Reprodutibilidade:</b> semente fixa (42), treino determinístico, tudo em um único notebook (<code>bracol_ml_vs_dl.ipynb</code>) executado do início ao fim.</li>
+  <li><b>Ambiente:</b> Python 3.12, scikit-learn 1.9.1, scikit-image 0.26, OpenCV 5.0, PyTorch 2.11 (CUDA 12.8), Ultralytics 8.4.210, GPU NVIDIA RTX 5060 Ti (16 GB).</li>
+</ul>
+
+<h2>5. Solução de Machine Learning clássico</h2>
+<p><b>Pré-processamento:</b> cada imagem é redimensionada para 128 × 128 px (interpolação por área) e convertida para HSV, Lab e tons de cinza.</p>
+<p><b>Atributos</b>, organizados em grupos para permitir a ablação:</p>
+<ul>
+  <li><b>Cor (40):</b> histogramas normalizados de H (18 bins), S e V (8 bins cada), mais média e desvio padrão dos canais Lab. A ferrugem é amarelo-alaranjada, as lesões necróticas são marrons e a folha sadia é verde.</li>
+  <li><b>LBP (28):</b> histogramas de padrões binários locais uniformes, com (P=8, R=1) e (P=16, R=2). Descrevem textura de forma invariante à rotação.</li>
+  <li><b>Haralick/GLCM (12):</b> contraste, dissimilaridade, homogeneidade, energia, correlação e ASM, em distâncias 1 e 3, com média de 4 ângulos.</li>
+  <li><b>HOG (324):</b> histograma de gradientes orientados em 64 × 64 px, 9 orientações.</li>
+</ul>
+<p><b>Classificadores:</b> SVM com kernel RBF, Random Forest, KNN e Regressão Logística, todos com padronização (<code>StandardScaler</code>) e, quando disponível, <code>class_weight='balanced'</code>. Cada combinação de hiperparâmetros é treinada no treino e avaliada na validação.</p>
+
+<table>
+  <tr><th>Atributos (SVM RBF, C=10)</th><th class="n">Dimensão</th><th class="n">F1 macro (val.)</th></tr>
+  <tr class="destaque"><td>Cor + LBP + GLCM</td><td class="n">80</td><td class="n">0,845</td></tr>
+  <tr><td>Cor + LBP + GLCM + HOG</td><td class="n">404</td><td class="n">0,811</td></tr>
+  <tr><td>Só cor</td><td class="n">40</td><td class="n">0,774</td></tr>
+  <tr><td>Só LBP</td><td class="n">28</td><td class="n">0,686</td></tr>
+  <tr><td>Só HOG</td><td class="n">324</td><td class="n">0,625</td></tr>
+  <tr><td>Só GLCM</td><td class="n">12</td><td class="n">0,571</td></tr>
+</table>
+<p class="legenda">Tabela 2. Ablação de atributos. A cor sozinha explica a maior parte do desempenho. O HOG piora o resultado quando é adicionado, provavelmente porque descreve a orientação da lesão, que não tem relação com a classe.</p>
+
+<table>
+  <tr><th>Classificador</th><th>Melhores hiperparâmetros</th><th class="n">F1 macro (val.)</th></tr>
+  <tr class="destaque"><td>SVM (RBF)</td><td>C = 100, γ = 0,001</td><td class="n">0,867</td></tr>
+  <tr><td>Regressão Logística</td><td>C = 1</td><td class="n">0,858</td></tr>
+  <tr><td>Random Forest</td><td>400 árvores, max_features = 0,3</td><td class="n">0,852</td></tr>
+  <tr><td>KNN</td><td>k = 3, pesos por distância</td><td class="n">0,727</td></tr>
+</table>
+<p class="legenda">Tabela 3. Seleção de classificador com os atributos cor + LBP + GLCM. O SVM foi escolhido para o teste.</p>
+
+<h2>6. Solução de Deep Learning (YOLO)</h2>
+<p>A rede é o <b>YOLO26-s em modo classificação</b> (<code>yolo26s-cls</code>, Ultralytics), inicializada com pesos pré-treinados no ImageNet (transferência de aprendizado). O modo classificação foi escolhido porque o BRACOL não tem caixas delimitadoras por tipo de estresse: as máscaras de segmentação só distinguem fundo, folha e sintoma. Também é a forma de resolver o mesmo problema da solução clássica, como exige o enunciado.</p>
+<ul>
+  <li><b>Entrada:</b> 224 × 224 px, lote de 64 imagens.</li>
+  <li><b>Otimização:</b> AdamW, taxa inicial 5 × 10⁻⁴ com decaimento cosseno, 3 épocas de aquecimento, 60 épocas, early stopping com paciência 30. O checkpoint final é o de maior acurácia na validação (época 45, 98,2%).</li>
+  <li><b>Aumento de dados</b> (padrão do Ultralytics): RandAugment, espelhamento horizontal, variação de HSV, translação, escala e apagamento aleatório.</li>
+</ul>
+<p>Uma primeira execução com o otimizador automático do Ultralytics oscilou: a melhor validação apareceu na época 2 e o treino parou na época 17, com F1 de 0,943 no teste. A troca para AdamW com taxa menor e decaimento cosseno deu uma curva estável. A decisão foi tomada só com base na validação.</p>
+<p>O YOLO27 foi anunciado pela Ultralytics em setembro de 2026, mas seus pesos ainda não estavam publicados na versão 8.4.210 usada aqui. Se ele for lançado antes da entrega, a troca exige mudar só o nome do modelo no notebook, e a comparação YOLO26 × YOLO27 pode entrar como experimento adicional.</p>
+
+<figure>
+  <img src="../results/yolo_curvas.png" alt="Curvas de loss e acurácia do YOLO">
+  <figcaption>Figura 2. Loss de treino e validação e acurácia top-1 na validação ao longo das épocas.</figcaption>
+</figure>
+
+<h2>7. Avaliação experimental e métricas</h2>
+<p>As duas soluções são avaliadas no conjunto de teste (335 imagens) por precision, recall e F1 por classe e em média macro, acurácia, matriz de confusão e análise visual de casos em que só uma das soluções erra, em que as duas erram e em que as duas acertam. O tempo de inferência por imagem é registrado como informação complementar.</p>
+
+<h2>8. Resultados preliminares</h2>
+<div class="kpis">
+  <div class="kpi"><div class="v">0,832</div><div class="l">F1 macro, ML clássico (meta 0,60)</div></div>
+  <div class="kpi"><div class="v">0,954</div><div class="l">F1 macro, YOLO26-s-cls (meta 0,80)</div></div>
+  <div class="kpi"><div class="v">55 → 15</div><div class="l">erros no teste, de ML para DL</div></div>
+</div>
+
+<table>
+  <tr><th>Solução</th><th class="n">Precision</th><th class="n">Recall</th><th class="n">F1 macro</th><th class="n">Acurácia</th><th class="n">Meta F1</th></tr>
+  <tr><td>ML: SVM RBF, cor + LBP + GLCM</td><td class="n">0,827</td><td class="n">0,844</td><td class="n">0,832</td><td class="n">0,836</td><td class="n">0,60 ✓</td></tr>
+  <tr class="destaque"><td>DL: YOLO26-s-cls</td><td class="n">0,954</td><td class="n">0,955</td><td class="n">0,954</td><td class="n">0,955</td><td class="n">0,80 ✓</td></tr>
+</table>
+<p class="legenda">Tabela 4. Desempenho no conjunto de teste (médias macro).</p>
+
+<table>
+  <tr><th>Classe</th><th class="n">F1 ML</th><th class="n">F1 DL</th><th class="n">Ganho</th></tr>
+  <tr><td>Saudável</td><td class="n">0,905</td><td class="n">0,987</td><td class="n">+0,08</td></tr>
+  <tr><td>Bicho-mineiro</td><td class="n">0,828</td><td class="n">0,934</td><td class="n">+0,11</td></tr>
+  <tr><td>Ferrugem</td><td class="n">0,877</td><td class="n">0,984</td><td class="n">+0,11</td></tr>
+  <tr><td>Phoma</td><td class="n">0,871</td><td class="n">0,957</td><td class="n">+0,09</td></tr>
+  <tr><td>Cercospora</td><td class="n">0,679</td><td class="n">0,909</td><td class="n">+0,23</td></tr>
+</table>
+<p class="legenda">Tabela 5. F1 por classe no teste. A cercosporiose é a classe mais difícil para as duas soluções e a que mais ganha com o DL.</p>
+
+<figure>
+  <img src="../results/matrizes_confusao.png" alt="Matrizes de confusão do ML e do DL">
+  <figcaption>Figura 3. Matrizes de confusão no teste (linhas: classe real; colunas: classe prevista).</figcaption>
+</figure>
+
+<figure>
+  <img src="../results/erros_ambos.png" alt="Imagens em que as duas soluções erram">
+  <figcaption>Figura 4. Os 12 casos em que as duas soluções erram. Quase todos são lesões marrons necróticas, trocadas entre bicho-mineiro, phoma e cercospora.</figcaption>
+</figure>
+
+<h2>9. Análise crítica preliminar</h2>
+<ul>
+  <li><b>As duas metas foram atingidas</b>, e o DL reduz os erros de 55 para 15 em 335 imagens. Há 43 casos em que só o ML erra e 3 em que só o DL erra.</li>
+  <li><b>O ML depende da cor.</b> Ele separa bem as classes de cor distinta (saudável e ferrugem), mas confunde as lesões marrons. Também classifica 11 imagens de ferrugem como cercospora: as duas podem ter halo amarelo, e histogramas globais de cor não capturam a forma da lesão.</li>
+  <li><b>O DL aprende forma e textura juntas.</b> O maior ganho é na cercosporiose (+0,23 de F1). Os erros que restam concentram-se nos mesmos pares de classes necróticas, o que sugere limite visual real e possíveis rótulos ambíguos (Figura 4).</li>
+  <li><b>Custo:</b> o pipeline clássico treina em segundos na CPU e é interpretável pela ablação. O YOLO exige GPU para treinar em tempo razoável (cerca de 1 s por época aqui).</li>
+</ul>
+
+<h3>Limitações e próximos passos</h3>
+<ul>
+  <li>Cada solução foi treinada uma única vez, com uma semente. Com 50 imagens de cercospora no teste, diferenças de 1 a 2 pontos de F1 estão dentro do ruído. Próximo passo: repetir com várias sementes e reportar média e desvio padrão.</li>
+  <li>Os recortes isolam uma única lesão. Em campo, a folha inteira pode ter mais de um estresse. Próximo passo: avaliar no subconjunto de folhas inteiras (1.747 imagens, rótulo de estresse predominante).</li>
+  <li>Tempos de inferência medidos de forma simples (ML ≈ 18 ms/imagem na CPU; YOLO 1 a 4 ms/imagem na GPU em lotes de 32), sem benchmark controlado.</li>
+  <li>Avaliar o YOLO27 quando os pesos forem publicados.</li>
+</ul>
+
+<h2>Referências</h2>
+<ol class="refs">
+  <li>KROHLING, R. A.; ESGARIO, J. G. M.; VENTURA, J. A. BRACOL: A Brazilian Arabica Coffee Leaf images dataset to identification and quantification of coffee diseases and pests. Mendeley Data, v1, 2019. doi:10.17632/yy2k5y8mxg.1.</li>
+  <li>ESGARIO, J. G. M.; KROHLING, R. A.; VENTURA, J. A. Deep learning for classification and severity estimation of coffee leaf biotic stress. <i>Computers and Electronics in Agriculture</i>, v. 169, 105162, 2020.</li>
+  <li>HARALICK, R. M.; SHANMUGAM, K.; DINSTEIN, I. Textural features for image classification. <i>IEEE Transactions on Systems, Man, and Cybernetics</i>, v. 3, n. 6, p. 610–621, 1973.</li>
+  <li>OJALA, T.; PIETIKÄINEN, M.; MÄENPÄÄ, T. Multiresolution gray-scale and rotation invariant texture classification with local binary patterns. <i>IEEE TPAMI</i>, v. 24, n. 7, p. 971–987, 2002.</li>
+  <li>DALAL, N.; TRIGGS, B. Histograms of oriented gradients for human detection. In: <i>CVPR</i>, 2005.</li>
+  <li>CORTES, C.; VAPNIK, V. Support-vector networks. <i>Machine Learning</i>, v. 20, p. 273–297, 1995.</li>
+  <li>PEDREGOSA, F. et al. Scikit-learn: Machine learning in Python. <i>Journal of Machine Learning Research</i>, v. 12, p. 2825–2830, 2011.</li>
+  <li>JOCHER, G. et al. Ultralytics YOLO. Software, versão 8.4.210, 2026. Disponível em: github.com/ultralytics/ultralytics.</li>
+</ol>
+
+</body>
+</html>

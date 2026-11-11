@@ -1,0 +1,9 @@
+.venv/
+data/
+.impeccable/
+*.pt
+!runs/*/weights/best.pt
+runs/*/weights/last.pt
+run.log
+__pycache__/
+.ipynb_checkpoints/

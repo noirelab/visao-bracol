@@ -5,13 +5,14 @@
 <title>Proposta BRACOL</title>
 <style>
   @page { size: A4; margin: 22mm 20mm 20mm 20mm;
-          @bottom-center { content: counter(page); font: 9pt Inter, sans-serif; color: #666; } }
+          @bottom-center { content: counter(page); font: 9pt "Noto Sans", sans-serif; color: #666; } }
   :root { --ink: #1d1d1b; --muted: #5a5a55; --rule: #d6d6cf; --accent: #2f5d3a; --tint: #f3f5f0; }
   html { background: #fff; }
   body { font: 10.5pt/1.5 "Noto Serif", "Liberation Serif", serif; color: var(--ink); margin: 0; }
-  h1, h2, h3, table, figcaption, .meta, .kpi { font-family: Inter, sans-serif; }
+  table, figcaption, .meta, .kpi { font-family: "Noto Sans", sans-serif; }
+  h1, h2, h3 { font-family: "Noto Serif", serif; }
   .capa { border-bottom: 2px solid var(--accent); padding-bottom: 14px; margin-bottom: 18px; }
-  .capa .disc { font: 600 9pt Inter, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+  .capa .disc { font: 600 9pt "Noto Sans", sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
   h1 { font-size: 19pt; line-height: 1.2; margin: 0 0 10px; font-weight: 700; }
   .meta { font-size: 9.5pt; color: var(--muted); margin: 0; }
   .meta b { color: var(--ink); font-weight: 600; }
@@ -25,15 +26,15 @@
   th { font-weight: 600; border-bottom: 1.5px solid var(--ink); }
   td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
   tr.destaque td { background: var(--tint); font-weight: 600; }
-  .legenda { font: 8.5pt Inter, sans-serif; color: var(--muted); margin: 2px 0 12px; }
+  .legenda { font: 8.5pt "Noto Sans", sans-serif; color: var(--muted); margin: 2px 0 12px; }
   figure { margin: 8px 0 12px; break-inside: avoid; }
   figure img { width: 100%; display: block; }
   figcaption { font-size: 8.5pt; color: var(--muted); margin-top: 4px; }
   .kpis { display: flex; gap: 10px; margin: 8px 0 12px; break-inside: avoid; }
-  .kpi { flex: 1; border: 1px solid var(--rule); border-left: 3px solid var(--accent); padding: 8px 10px; }
+  .kpi { flex: 1; border: 1px solid var(--rule); padding: 8px 10px; }
   .kpi .v { font-size: 20pt; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
   .kpi .l { font-size: 8.5pt; color: var(--muted); }
-  .nota { font-size: 9.5pt; background: var(--tint); padding: 8px 10px; border-left: 3px solid var(--rule); margin: 8px 0; }
+  .nota { font-size: 9.5pt; background: var(--tint); padding: 8px 10px; margin: 8px 0; }
   code { font: 8.8pt "DejaVu Sans Mono", monospace; }
   .quebra { break-before: page; }
   .refs li { font-size: 9pt; text-align: left; }
